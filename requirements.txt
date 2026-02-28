@@ -2,3 +2,6 @@ dash
 plotly
 dash-bootstrap-components
 gunicorn
+numpy
+pandas
+scikit-learn
