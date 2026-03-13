@@ -3,7 +3,7 @@ plotly
 dash-bootstrap-components
 gunicorn
 numpy
-pandas
-scikit-learn
+pandas==2.2.2
 matplotlib
 scipy
+pyarrow==16.1.0
