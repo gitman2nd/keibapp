@@ -1,10 +1,4 @@
-dash
-plotly
-dash-bootstrap-components
-gunicorn
-numpy
-pandas
-matplotlib
-scipy
-pyarrow
-requests
+dash==2.18.2
+pandas==2.2.3
+pyarrow==15.0.2
+gunicorn==21.2.0
