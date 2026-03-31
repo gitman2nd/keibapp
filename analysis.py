@@ -84,8 +84,8 @@ def get_race_detail(df: pd.DataFrame, race_id: str) -> tuple[dict, pd.DataFrame]
     )
 
     horses = (
-        target.sort_values(["馬番", "枠番", "馬名"])
-        [["枠番", "馬番", "馬名", "waku_color", "waku_text_color"]]
+        target.sort_values(["馬番", "馬名"])
+        [["馬番", "馬名", "waku_color", "waku_text_color"]]
         .reset_index(drop=True)
     )
     return head, horses
