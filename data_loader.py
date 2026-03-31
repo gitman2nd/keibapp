@@ -95,7 +95,7 @@ def preprocess_race_data(df: pd.DataFrame) -> pd.DataFrame:
     # 必須想定列
     expected_cols = [
         "レースid", "開催日", "コース", "R", "距離", "クラス", "出走頭数", "芝砂",
-        "枠番", "馬番", "馬名"
+         "馬番", "馬名"
     ]
     missing = [c for c in expected_cols if c not in df.columns]
     if missing:
@@ -117,13 +117,9 @@ def preprocess_race_data(df: pd.DataFrame) -> pd.DataFrame:
     df["R"] = pd.to_numeric(df["R"], errors="coerce").astype("Int64")
     df["距離"] = pd.to_numeric(df["距離"], errors="coerce").astype("Int64")
     df["出走頭数"] = pd.to_numeric(df["出走頭数"], errors="coerce").astype("Int64")
-    df["枠番"] = pd.to_numeric(df["枠番"], errors="coerce").astype("Int64")
     df["馬番"] = pd.to_numeric(df["馬番"], errors="coerce").astype("Int64")
 
     df["芝砂"] = df["芝砂"].astype(str).str.strip()
     df["surface_color"] = df["芝砂"].map(SURFACE_COLOR_MAP).fillna("#9e9e9e")
-
-    df["waku_color"] = df["枠番"].apply(lambda x: WAKU_COLOR_MAP.get(_safe_int(x), "#d9d9d9"))
-    df["waku_text_color"] = df["枠番"].apply(lambda x: TEXT_COLOR_ON_WAKU.get(_safe_int(x), "#111111"))
 
     return df
