@@ -81,11 +81,23 @@ def search_race_button(race_row, button_id):
 
 
 def build_top_grid(latest_df):
-    courses = ["札幌", "函館", "福島", "新潟", "東京", "中山", "中京", "京都", "阪神", "小倉"]
+    courses = [
+        "札幌",
+        "函館",
+        "福島",
+        "新潟",
+        "東京",
+        "中山",
+        "中京",
+        "京都",
+        "阪神",
+        "小倉",
+    ]
     grid_rows = []
 
     header = [html.Div("", style={"fontWeight": "bold"})] + [
-        html.Div(c, style={"fontWeight": "bold", "textAlign": "center"}) for c in courses
+        html.Div(c, style={"fontWeight": "bold", "textAlign": "center"})
+        for c in courses
     ]
     grid_rows.extend(header)
 
@@ -144,7 +156,6 @@ def build_top_page():
             html.H1("競馬アプリ"),
             html.P("最新1週間のレース"),
             build_top_grid(latest_df),
-
             html.H2("レース検索"),
             html.Div(
                 [
@@ -152,7 +163,10 @@ def build_top_page():
                         [
                             html.Label("年"),
                             dcc.Dropdown(
-                                options=[{"label": str(x), "value": x} for x in FILTER_OPTIONS["years"]],
+                                options=[
+                                    {"label": str(x), "value": x}
+                                    for x in FILTER_OPTIONS["years"]
+                                ],
                                 id="filter-year",
                                 multi=True,
                             ),
@@ -162,7 +176,10 @@ def build_top_page():
                         [
                             html.Label("月"),
                             dcc.Dropdown(
-                                options=[{"label": str(x), "value": x} for x in FILTER_OPTIONS["months"]],
+                                options=[
+                                    {"label": str(x), "value": x}
+                                    for x in FILTER_OPTIONS["months"]
+                                ],
                                 id="filter-month",
                                 multi=True,
                             ),
@@ -172,7 +189,10 @@ def build_top_page():
                         [
                             html.Label("芝砂"),
                             dcc.Dropdown(
-                                options=[{"label": str(x), "value": x} for x in FILTER_OPTIONS["surfaces"]],
+                                options=[
+                                    {"label": str(x), "value": x}
+                                    for x in FILTER_OPTIONS["surfaces"]
+                                ],
                                 id="filter-surface",
                                 multi=True,
                             ),
@@ -182,7 +202,10 @@ def build_top_page():
                         [
                             html.Label("距離"),
                             dcc.Dropdown(
-                                options=[{"label": str(x), "value": x} for x in FILTER_OPTIONS["distances"]],
+                                options=[
+                                    {"label": str(x), "value": x}
+                                    for x in FILTER_OPTIONS["distances"]
+                                ],
                                 id="filter-distance",
                                 multi=True,
                             ),
@@ -192,7 +215,10 @@ def build_top_page():
                         [
                             html.Label("クラス"),
                             dcc.Dropdown(
-                                options=[{"label": str(x), "value": x} for x in FILTER_OPTIONS["classes"]],
+                                options=[
+                                    {"label": str(x), "value": x}
+                                    for x in FILTER_OPTIONS["classes"]
+                                ],
                                 id="filter-class",
                                 multi=True,
                             ),
@@ -240,7 +266,7 @@ def build_race_page(race_id: str):
                         style={
                             "flex": 1,
                             "paddingBottom": "6px",
-                            "borderBottom": f"6px solid {row['waku_color']}",
+                            # "borderBottom": f"6px solid {row['waku_color']}",
                             "color": "#111111",
                             "fontWeight": "500",
                         },
@@ -261,7 +287,9 @@ def build_race_page(race_id: str):
             html.H1(f"{head['コース名']} {int(head['R'])}R"),
             html.Div(
                 [
-                    html.Div(f"開催日: {head['開催日'].strftime('%Y-%m-%d') if head['開催日'] is not None else ''}"),
+                    html.Div(
+                        f"開催日: {head['開催日'].strftime('%Y-%m-%d') if head['開催日'] is not None else ''}"
+                    ),
                     html.Div(f"コース: {head['コース名']}"),
                     html.Div(f"距離: {int(head['距離'])}m"),
                     html.Div(f"クラス: {head['クラス']}"),

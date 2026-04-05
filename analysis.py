@@ -8,8 +8,19 @@ def build_race_master(df: pd.DataFrame) -> pd.DataFrame:
     1レース1行のマスタを作る
     """
     race_cols = [
-        "レースid", "開催日", "年", "月", "月日",
-        "コースコード", "コース名", "R", "距離", "クラス", "出走頭数", "芝砂", "surface_color"
+        "レースid",
+        "開催日",
+        "年",
+        "月",
+        "月日",
+        "コースコード",
+        "コース名",
+        "R",
+        "距離",
+        "クラス",
+        "出走頭数",
+        "芝砂",
+        "surface_color",
     ]
 
     existing = [c for c in race_cols if c in df.columns]
@@ -65,7 +76,9 @@ def filter_races(
 
 def get_filter_options(race_df: pd.DataFrame) -> dict:
     return {
-        "years": sorted(race_df["年"].dropna().astype(int).unique().tolist(), reverse=True),
+        "years": sorted(
+            race_df["年"].dropna().astype(int).unique().tolist(), reverse=True
+        ),
         "months": sorted(race_df["月"].dropna().astype(int).unique().tolist()),
         "surfaces": sorted(race_df["芝砂"].dropna().astype(str).unique().tolist()),
         "distances": sorted(race_df["距離"].dropna().astype(int).unique().tolist()),
@@ -78,14 +91,11 @@ def get_race_detail(df: pd.DataFrame, race_id: str) -> tuple[dict, pd.DataFrame]
     if target.empty:
         return {}, target
 
-    head = (
-        target.iloc[0][["レースid", "開催日", "コース名", "距離", "クラス", "芝砂", "R"]]
-        .to_dict()
-    )
+    head = target.iloc[0][
+        ["レースid", "開催日", "コース名", "距離", "クラス", "芝砂", "R"]
+    ].to_dict()
 
-    horses = (
-        target.sort_values(["馬番", "馬名"])
-        [["馬番", "馬名", "waku_color", "waku_text_color"]]
-        .reset_index(drop=True)
+    horses = target.sort_values(["馬番", "馬名"])[["馬番", "馬名"]].reset_index(
+        drop=True
     )
     return head, horses
