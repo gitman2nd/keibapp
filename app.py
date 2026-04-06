@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from dash import Dash, html, dcc, Input, Output, State, ALL, no_update
 import dash
+import logging
 
+# ※これらは既存のファイルから正しくインポートされる必要があります
 from data_loader import load_race_data
 from analysis import (
     build_race_master,
@@ -21,62 +23,60 @@ FILTER_OPTIONS = get_filter_options(RACE_MASTER)
 
 
 # -------------------------
-# アプリ
+# アプリ設定
 # -------------------------
+logging.basicConfig(
+    filename="dash_app.log",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 app = Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 
-def page_container():
-    return html.Div(
-        [
-            dcc.Location(id="url"),
-            dcc.Store(id="selected-race-id"),
-            html.Div(id="page-content"),
-        ],
-        style={"maxWidth": "1200px", "margin": "0 auto", "padding": "24px"},
-    )
-
-
 # -------------------------
-# 共通UI
+# 共通UI (dcc.Linkを使用して遷移をシンプル化)
 # -------------------------
-def race_button_card(race_row, button_id):
+def race_button_card(race_row, race_id):
+    """最新レースグリッド用のリンクボタン"""
     text = f"{int(race_row['距離'])}m / {race_row['クラス']} / {int(race_row['出走頭数'])}頭"
-    return html.Button(
-        text,
-        id=button_id,
-        n_clicks=0,
-        style={
-            "width": "100%",
-            "padding": "8px 10px",
-            "margin": "4px 0",
-            "borderRadius": "10px",
-            "border": f"2px solid {race_row['surface_color']}",
-            "background": "#ffffff",
-            "cursor": "pointer",
-            "fontSize": "13px",
-            "textAlign": "left",
-        },
+    return dcc.Link(
+        html.Button(
+            text,
+            style={
+                "width": "100%",
+                "padding": "8px 10px",
+                "margin": "4px 0",
+                "borderRadius": "10px",
+                "border": f"2px solid {race_row['surface_color']}",
+                "background": "#ffffff",
+                "cursor": "pointer",
+                "fontSize": "13px",
+                "textAlign": "left",
+            },
+        ),
+        href=f"/race/{race_id}",
     )
 
 
-def search_race_button(race_row, button_id):
+def search_race_button(race_row, race_id):
+    """検索結果リスト用のリンクボタン"""
     text = f"{race_row['年']} / {race_row['月日']} / {int(race_row['距離'])}m / {race_row['クラス']}"
-    return html.Button(
-        text,
-        id=button_id,
-        n_clicks=0,
-        style={
-            "width": "100%",
-            "padding": "10px 12px",
-            "marginBottom": "8px",
-            "borderRadius": "10px",
-            "border": f"2px solid {race_row['surface_color']}",
-            "background": "#ffffff",
-            "cursor": "pointer",
-            "textAlign": "left",
-        },
+    return dcc.Link(
+        html.Button(
+            text,
+            style={
+                "width": "100%",
+                "padding": "10px 12px",
+                "marginBottom": "8px",
+                "borderRadius": "10px",
+                "border": f"2px solid {race_row['surface_color']}",
+                "background": "#ffffff",
+                "cursor": "pointer",
+                "textAlign": "left",
+            },
+        ),
+        href=f"/race/{race_id}",
     )
 
 
@@ -130,12 +130,7 @@ def build_top_grid(latest_df):
                 )
             else:
                 race_row = row.iloc[0]
-                grid_rows.append(
-                    race_button_card(
-                        race_row,
-                        {"type": "race-link", "race_id": race_row["レースid"]},
-                    )
-                )
+                grid_rows.append(race_button_card(race_row, race_row["レースid"]))
 
     return html.Div(
         grid_rows,
@@ -150,7 +145,6 @@ def build_top_grid(latest_df):
 
 def build_top_page():
     latest_df = get_latest_week_races(RACE_MASTER)
-
     return html.Div(
         [
             html.H1("競馬アプリ"),
@@ -163,12 +157,12 @@ def build_top_page():
                         [
                             html.Label("年"),
                             dcc.Dropdown(
+                                id="filter-year",
+                                multi=True,
                                 options=[
                                     {"label": str(x), "value": x}
                                     for x in FILTER_OPTIONS["years"]
                                 ],
-                                id="filter-year",
-                                multi=True,
                             ),
                         ]
                     ),
@@ -176,12 +170,12 @@ def build_top_page():
                         [
                             html.Label("月"),
                             dcc.Dropdown(
+                                id="filter-month",
+                                multi=True,
                                 options=[
                                     {"label": str(x), "value": x}
                                     for x in FILTER_OPTIONS["months"]
                                 ],
-                                id="filter-month",
-                                multi=True,
                             ),
                         ]
                     ),
@@ -189,12 +183,12 @@ def build_top_page():
                         [
                             html.Label("芝砂"),
                             dcc.Dropdown(
+                                id="filter-surface",
+                                multi=True,
                                 options=[
                                     {"label": str(x), "value": x}
                                     for x in FILTER_OPTIONS["surfaces"]
                                 ],
-                                id="filter-surface",
-                                multi=True,
                             ),
                         ]
                     ),
@@ -202,12 +196,12 @@ def build_top_page():
                         [
                             html.Label("距離"),
                             dcc.Dropdown(
+                                id="filter-distance",
+                                multi=True,
                                 options=[
                                     {"label": str(x), "value": x}
                                     for x in FILTER_OPTIONS["distances"]
                                 ],
-                                id="filter-distance",
-                                multi=True,
                             ),
                         ]
                     ),
@@ -215,12 +209,12 @@ def build_top_page():
                         [
                             html.Label("クラス"),
                             dcc.Dropdown(
+                                id="filter-class",
+                                multi=True,
                                 options=[
                                     {"label": str(x), "value": x}
                                     for x in FILTER_OPTIONS["classes"]
                                 ],
-                                id="filter-class",
-                                multi=True,
                             ),
                         ]
                     ),
@@ -240,13 +234,23 @@ def build_top_page():
 def build_race_page(race_id: str):
     head, horses = get_race_detail(DF, race_id)
 
+    # TOPへ戻るボタンもdcc.Linkで定義
+    back_link = dcc.Link(
+        "← TOPへ",
+        href="/",
+        style={
+            "display": "inline-block",
+            "padding": "10px 20px",
+            "marginBottom": "20px",
+            "backgroundColor": "#eee",
+            "borderRadius": "5px",
+            "textDecoration": "none",
+            "color": "#333",
+        },
+    )
+
     if not head:
-        return html.Div(
-            [
-                dcc.Link("← TOPへ", href="/"),
-                html.H2("レースが見つかりません"),
-            ]
-        )
+        return html.Div([back_link, html.H2("レースが見つかりません")])
 
     horse_cards = []
     for _, row in horses.iterrows():
@@ -266,7 +270,6 @@ def build_race_page(race_id: str):
                         style={
                             "flex": 1,
                             "paddingBottom": "6px",
-                            # "borderBottom": f"6px solid {row['waku_color']}",
                             "color": "#111111",
                             "fontWeight": "500",
                         },
@@ -283,7 +286,7 @@ def build_race_page(race_id: str):
 
     return html.Div(
         [
-            dcc.Link("← TOPへ", href="/"),
+            back_link,
             html.H1(f"{head['コース名']} {int(head['R'])}R"),
             html.Div(
                 [
@@ -313,28 +316,35 @@ def build_race_page(race_id: str):
 
 
 # -------------------------
-# レイアウト
+# レイアウト (Store等の複雑な遷移管理を削除)
 # -------------------------
-app.layout = page_container()
+app.layout = html.Div(
+    [
+        dcc.Location(id="url"),
+        html.Div(id="page-content"),
+    ],
+    style={"maxWidth": "1200px", "margin": "0 auto", "padding": "24px"},
+)
 
 
 # -------------------------
-# 画面切り替え
+# コールバック
 # -------------------------
+
+
 @app.callback(
     Output("page-content", "children"),
     Input("url", "pathname"),
 )
 def render_page(pathname):
+    """URLが変更されたらページを切り替える"""
+    logging.info(f"アクセスされたURL: {pathname}")
     if pathname and pathname.startswith("/race/"):
         race_id = pathname.split("/race/")[-1]
         return build_race_page(race_id)
     return build_top_page()
 
 
-# -------------------------
-# 検索結果表示
-# -------------------------
 @app.callback(
     Output("search-result-area", "children"),
     Input("filter-year", "value"),
@@ -344,6 +354,7 @@ def render_page(pathname):
     Input("filter-class", "value"),
 )
 def update_search_results(years, months, surfaces, distances, classes):
+    """検索条件に合わせて結果を更新"""
     result = filter_races(
         RACE_MASTER,
         years=years,
@@ -355,42 +366,12 @@ def update_search_results(years, months, surfaces, distances, classes):
     )
 
     if result.empty:
-        return html.Div("該当レースなし")
+        return html.Div("該当レースなし", style={"padding": "20px"})
 
     children = []
     for _, row in result.iterrows():
-        children.append(
-            search_race_button(
-                row,
-                {"type": "race-link", "race_id": row["レースid"]},
-            )
-        )
+        children.append(search_race_button(row, row["レースid"]))
     return html.Div(children)
-
-
-# -------------------------
-# ボタン押下で遷移
-# -------------------------
-@app.callback(
-    Output("url", "pathname"),
-    Input({"type": "race-link", "race_id": ALL}, "n_clicks"),
-    State({"type": "race-link", "race_id": ALL}, "id"),
-    prevent_initial_call=True,
-)
-def move_race_page(n_clicks_list, ids):
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        return no_update
-
-    triggered_id = ctx.triggered_id
-    if not triggered_id:
-        return no_update
-
-    race_id = triggered_id.get("race_id")
-    if not race_id:
-        return no_update
-
-    return f"/race/{race_id}"
 
 
 if __name__ == "__main__":
