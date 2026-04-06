@@ -1,0 +1,24 @@
+ModuleNotFoundError: No module named 'lightgbm'
+
+Traceback (most recent call last)
+File "/home/piroki/workspace/keibapp/app.py", line 582, in render_page
+return build_predict_result_page(race_id)
+File "/home/piroki/workspace/keibapp/app.py", line 431, in build_predict_result_page
+head, result = predict_race_with_details(DF, race_id)
+File "/home/piroki/workspace/keibapp/predict.py", line 48, in predict_race_with_details
+model, feature_cols = load_model(model_path)
+File "/home/piroki/workspace/keibapp/predict.py", line 11, in load_model
+data = pickle.load(f)
+ModuleNotFoundError: No module named 'lightgbm'
+This is the Copy/Paste friendly version of the traceback.
+
+Traceback (most recent call last):
+  File "/home/piroki/workspace/keibapp/app.py", line 582, in render_page
+    return build_predict_result_page(race_id)
+  File "/home/piroki/workspace/keibapp/app.py", line 431, in build_predict_result_page
+    head, result = predict_race_with_details(DF, race_id)
+  File "/home/piroki/workspace/keibapp/predict.py", line 48, in predict_race_with_details
+    model, feature_cols = load_model(model_path)
+  File "/home/piroki/workspace/keibapp/predict.py", line 11, in load_model
+    data = pickle.load(f)
+ModuleNotFoundError: No module named 'lightgbm'

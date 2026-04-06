@@ -2,3 +2,5 @@ dash
 pandas
 pyarrow
 gunicorn
+lightgbm
+scikit-learn
