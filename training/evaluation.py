@@ -14,7 +14,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-from data_loader import load_race_data
+from app.data_loader import load_race_data
 
 
 FEATURE_COLS_V1 = ["単オッズ", "斤量", "出走間隔", "出走回数", "年齢"]

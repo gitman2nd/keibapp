@@ -3,8 +3,8 @@ from __future__ import annotations
 from dash import Dash, html, dcc, Input, Output, State, ALL, no_update
 import logging
 
-from data_loader import load_race_data
-from analysis import (
+from app.data_loader import load_race_data
+from app.analysis import (
     build_race_master,
     get_latest_week_races,
     filter_races,
@@ -425,7 +425,7 @@ def build_predict_top_page():
 
 
 def build_predict_result_page(race_id: str, model_version: str = "v1"):
-    from predict import predict_race_with_details, get_model_info
+    from .predict import predict_race_with_details, get_model_info
     import pandas as pd
 
     model_info = get_model_info(model_version)
@@ -733,7 +733,7 @@ def update_predict_search_results(years, months, surfaces, distances, classes):
     Input("race-id-store", "data"),
 )
 def update_prediction_results(model_version, race_id):
-    from predict import predict_race_with_details
+    from .predict import predict_race_with_details
     import pandas as pd
 
     _, result = predict_race_with_details(DF, race_id, model_version)

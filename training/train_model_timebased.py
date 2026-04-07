@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 import lightgbm as lgb
 
-from data_loader import load_race_data
+from app.data_loader import load_race_data
 
 
 FEATURE_COLS_V1 = ["単オッズ", "斤量", "出走間隔", "出走回数", "年齢"]

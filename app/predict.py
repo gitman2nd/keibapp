@@ -91,8 +91,8 @@ def get_model_info(model_version: Literal["v1", "v2"] = "v1") -> dict:
 
 
 if __name__ == "__main__":
-    from data_loader import load_race_data
-    from analysis import build_race_master
+    from .data_loader import load_race_data
+    from .analysis import build_race_master
 
     df = load_race_data("data/ur_bunseki.parquet")
     race_master = build_race_master(df)
